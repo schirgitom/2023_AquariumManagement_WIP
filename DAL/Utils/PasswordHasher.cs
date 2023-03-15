@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using Utils;
 
-namespace DAL.Utils
+namespace DAL.DBUtils
 {
     public sealed class PasswordHasher : IPasswordHasher
     {

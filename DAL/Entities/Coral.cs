@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,7 @@ namespace DAL.Entities
 {
     public class Coral : AquariumItem
     {
+        [BsonRepresentation(BsonType.String)]
         public CoralType CoralType { get; set; }
     }
 

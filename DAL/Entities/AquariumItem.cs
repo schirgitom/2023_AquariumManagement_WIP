@@ -1,11 +1,18 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
+    [BsonDiscriminator(RootClass = true)]
+    [BsonKnownTypes(typeof(Animal), typeof(Coral))]
+    //[JsonConverter(typeof(JsonInheritanceConverter), "discriminator")]
+    [KnownType(typeof(Animal))]
+    [KnownType(typeof(Coral))]
     public abstract class AquariumItem : Entity
     {
         public AquariumItem() { }
