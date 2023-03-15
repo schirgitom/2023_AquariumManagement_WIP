@@ -11,10 +11,14 @@ namespace DAL.Repository
     public interface IRepository<TEntity> where TEntity : Entity
     {
 
-        IEnumerable<TEntity> FilterBy(
-            Expression<Func<TEntity, bool>> filterExpression);
+        List<TEntity> FilterBy(
+               Expression<Func<TEntity, bool>> filterExpression);
 
-        IEnumerable<TProjected> FilterBy<TProjected>(
+        Task<List<TEntity>> FilterByAsync(
+           Expression<Func<TEntity, bool>> filterExpression);
+
+
+        List<TProjected> FilterBy<TProjected>(
             Expression<Func<TEntity, bool>> filterExpression,
             Expression<Func<TEntity, TProjected>> projectionExpression);
 

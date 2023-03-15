@@ -1,5 +1,6 @@
 ﻿using DAL.Entities;
 using DAL.Repository;
+using DAL.Repository.Impl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,6 @@ namespace DAL
     {
         public DBContext Context { get; private set; } = null;
 
-        public IRepository<Aquarium> Aquarium => new Repository<Aquarium>(Context);
 
 
 
@@ -21,5 +21,39 @@ namespace DAL
             Context = new DBContext();
         
         }
+
+        public IAquariumRepository Aquariums
+        {
+            get
+            {
+                return new AquariumRepository(Context);
+            }
+        }
+
+        public IAquariumItemRepository AquariumItems
+        {
+            get
+            {
+                return new AquariumItemRepository(Context);
+            }
+        }
+
+        public IUserRepository Users
+        {
+            get
+            {
+                return new UserRepository(Context);
+            }
+        }
+
+        public IUserAquariumRepository UsersAquarium
+        {
+            get
+            {
+                return new UserAquariumRepository(Context);
+            }
+        }
+
+     
     }
 }
