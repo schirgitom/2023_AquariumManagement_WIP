@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace DAL.Entities
 {
     public class Entity : IEntity
     {
+        [BsonId]
         public string ID { get; set; }
 
         public string GenerateID()

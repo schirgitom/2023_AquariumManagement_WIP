@@ -23,7 +23,7 @@ namespace Tests.DBTest
 
             UnitOfWork uow = new UnitOfWork();
 
-            Aquarium fromdb = await uow.Aquarium.InsertOneAsync(aquarium);
+            Aquarium fromdb = await uow.Aquariums.InsertOneAsync(aquarium);
 
             Assert.NotNull(fromdb);
             Assert.NotNull(fromdb.ID);
