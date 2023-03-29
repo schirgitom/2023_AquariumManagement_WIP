@@ -13,7 +13,7 @@ namespace Services
         protected UnitOfWork UnitOfWork;
         protected IRepository<TEntity> repository;
         protected GlobalService globalService;
-        protected IModelStateWrapper validationDictionary;
+        protected IModelStateWrapper modelStateWrapper;
         protected ModelStateDictionary Validation = null;
         protected User CurrentUser { get; private set; }
 
@@ -70,7 +70,7 @@ namespace Services
             else
             {
                 response.HasError = true;
-                response.ErrorMessages = validationDictionary.Errors.Values.ToList();
+                response.ErrorMessages = modelStateWrapper.Errors.Values.ToList();
             }
 
             return response;
@@ -108,7 +108,7 @@ namespace Services
             else
             {
                 response.HasError = true;
-                response.ErrorMessages = validationDictionary.Errors.Values.ToList();
+                response.ErrorMessages = modelStateWrapper.Errors.Values.ToList();
             }
 
             return response;
@@ -126,7 +126,7 @@ namespace Services
 
         public async Task SetModelState(ModelStateDictionary validate)
         {
-            validationDictionary = new ModelStateWrapper(validate);
+            modelStateWrapper = new ModelStateWrapper(validate);
             this.Validation = validate;
         }
 

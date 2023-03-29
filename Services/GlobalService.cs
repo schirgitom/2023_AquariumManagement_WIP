@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,14 @@ namespace Services
 {
     public class GlobalService
     {
+        public UserServices UserService { get; set; }
+
+        public GlobalService(IUnitOfWork uow)
+        {
+            UnitOfWork uowi = (UnitOfWork)uow;
+
+            UserService = new UserServices(uowi, uowi.Users, this);
+
+        }
     }
 }

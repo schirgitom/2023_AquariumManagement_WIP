@@ -47,7 +47,7 @@ namespace Services
             {
                 if (String.IsNullOrEmpty(entity.Email))
                 {
-                    validationDictionary.AddError("No Email", "Please provide an email");
+                    modelStateWrapper.AddError("No Email", "Please provide an email");
                 }
                 else
                 {
@@ -59,32 +59,32 @@ namespace Services
                         {
                             if (entity.ID.Equals(usr.ID) == false)
                             {
-                                validationDictionary.AddError("No Email", "Email already taken");
+                                modelStateWrapper.AddError("No Email", "Email already taken");
                             }
                         }
                         else
                         {
-                            validationDictionary.AddError("No Email", "Email already taken");
+                            modelStateWrapper.AddError("No Email", "Email already taken");
                         }
                     }
                 }
 
                 if (String.IsNullOrEmpty(entity.Firstname))
                 {
-                    validationDictionary.AddError("No Firstname", "Please provide a firstname");
+                    modelStateWrapper.AddError("No Firstname", "Please provide a firstname");
                 }
 
                 if (String.IsNullOrEmpty(entity.Lastname))
                 {
-                    validationDictionary.AddError("No Lastname", "Please provide a lastname");
+                    modelStateWrapper.AddError("No Lastname", "Please provide a lastname");
                 }
             }
             else
             {
-                validationDictionary.AddError("No User", "no user was provided");
+                modelStateWrapper.AddError("No User", "no user was provided");
             }
 
-            return validationDictionary.IsValid;
+            return modelStateWrapper.IsValid;
         }
 
         public async Task<ItemResponseModel<UserResponse>> Login(LoginRequest request)

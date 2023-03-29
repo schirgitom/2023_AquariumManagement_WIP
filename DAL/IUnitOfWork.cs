@@ -20,5 +20,7 @@ namespace DAL
         IUserRepository Users { get; }
 
         IUserAquariumRepository UsersAquarium { get; }
+
+        IRepository<Picture> Pictures { get; }
     }
 }

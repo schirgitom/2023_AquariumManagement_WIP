@@ -54,6 +54,15 @@ namespace DAL
             }
         }
 
-     
+        public IRepository<Picture> Pictures
+        {
+            get
+            {
+                return new Repository<Picture>(Context);
+            }
+        }
+
+
+
     }
 }

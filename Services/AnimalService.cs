@@ -22,10 +22,10 @@ namespace Services
             }
             else
             {
-                validationDictionary.AddError("NotValid", "Item is no Coral");
+                modelStateWrapper.AddError("NotValid", "Item is no Coral");
             }
 
-            return validationDictionary.IsValid;
+            return modelStateWrapper.IsValid;
         }
 
 

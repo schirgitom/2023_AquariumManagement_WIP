@@ -35,19 +35,19 @@ namespace Services
             {
                 if (entry.Inserted <= DateTime.MinValue)
                 {
-                    validationDictionary.AddError("InsertedMissing", "No insert date was set");
+                    modelStateWrapper.AddError("InsertedMissing", "No insert date was set");
                 }
                 if (entry.Amount <= 0)
                 {
-                    validationDictionary.AddError("AmountMissing", "Amount must be greater 0");
+                    modelStateWrapper.AddError("AmountMissing", "Amount must be greater 0");
                 }
             }
             else
             {
-                validationDictionary.AddError("ItemEmpty", "Object is empty");
+                modelStateWrapper.AddError("ItemEmpty", "Object is empty");
             }
 
-            return validationDictionary.IsValid;
+            return modelStateWrapper.IsValid;
 
         }
 

@@ -19,10 +19,10 @@ namespace Services
             }
             else
             {
-                validationDictionary.AddError("NotValid", "Item is no Coral");
+                modelStateWrapper.AddError("NotValid", "Item is no Coral");
             }
 
-            return validationDictionary.IsValid;
+            return modelStateWrapper.IsValid;
         }
 
 
@@ -37,8 +37,7 @@ namespace Services
             }
             else
             {
-                coralresp.AddErrorMessageRange(resp.ErrorMessages);
-                coralresp.AddWarningMessageRange(resp.WarningMessages);
+                coralresp.ErrorMessages = resp.ErrorMessages;
                 coralresp.HasError = true;
             }
             return coralresp;
