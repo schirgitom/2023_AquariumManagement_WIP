@@ -1,25 +1,19 @@
 ﻿using DAL;
 using DAL.Entities;
 using DAL.Repository;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Services.Models.Response;
 using Services.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utils;
 
 namespace Services
 {
     public abstract class Service<TEntity> where TEntity : Entity
     {
-        protected UnitOfWork unitOfWork;
+        protected UnitOfWork UnitOfWork;
         protected IRepository<TEntity> repository;
         protected GlobalService globalService;
-        protected IModelStateWrapper    modelStateWrapper;
+        protected IModelStateWrapper validationDictionary;
         protected ModelStateDictionary Validation = null;
         protected User CurrentUser { get; private set; }
 
@@ -27,7 +21,7 @@ namespace Services
 
         public Service(UnitOfWork uow, IRepository<TEntity> repository, GlobalService service)
         {
-            unitOfWork = uow;
+            UnitOfWork = uow;
             this.repository = repository;
             this.globalService = service;
         }
@@ -43,12 +37,12 @@ namespace Services
 
         public async Task Load(String user)
         {
-            CurrentUser = await unitOfWork.Users.FindOneAsync(x => x.Email.ToLower().Equals(user.ToLower()));
+            CurrentUser = await UnitOfWork.Users.FindOneAsync(x => x.Email.ToLower().Equals(user.ToLower()));
 
 
         }
 
-        public abstract Task<ItemResponseModel<TEntity>> Create(TEntity entity);
+        protected abstract Task<ItemResponseModel<TEntity>> Create(TEntity entity);
 
         public abstract Task<ItemResponseModel<TEntity>> Update(String id, TEntity entity);
 
@@ -58,11 +52,11 @@ namespace Services
         {
             ItemResponseModel<TEntity> response = new ItemResponseModel<TEntity>();
 
-            if(await Validate(entity))
+            if (await Validate(entity))
             {
                 ItemResponseModel<TEntity> ent = await Create(entity);
 
-                if(ent != null)
+                if (ent != null)
                 {
                     return ent;
                 }
@@ -76,7 +70,7 @@ namespace Services
             else
             {
                 response.HasError = true;
-                response.ErrorMessages = modelStateWrapper.Errors.Values.ToList();
+                response.ErrorMessages = validationDictionary.Errors.Values.ToList();
             }
 
             return response;
@@ -92,7 +86,7 @@ namespace Services
 
                 if (ent != null)
                 {
-                    if(ent.HasError == false)
+                    if (ent.HasError == false)
                     {
                         ent.Data.ID = id;
                         await this.repository.UpdateOneAsync(ent.Data);
@@ -114,7 +108,7 @@ namespace Services
             else
             {
                 response.HasError = true;
-                response.ErrorMessages = modelStateWrapper.Errors.Values.ToList();
+                response.ErrorMessages = validationDictionary.Errors.Values.ToList();
             }
 
             return response;
@@ -127,12 +121,12 @@ namespace Services
 
         public async virtual Task<List<TEntity>> Get()
         {
-            return  this.repository.FilterBy(x => true);
+            return this.repository.FilterBy(x => true);
         }
 
         public async Task SetModelState(ModelStateDictionary validate)
         {
-            modelStateWrapper = new ModelStateWrapper(validate);
+            validationDictionary = new ModelStateWrapper(validate);
             this.Validation = validate;
         }
 
