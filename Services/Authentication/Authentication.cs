@@ -1,5 +1,5 @@
-﻿using DAL;
-using DAL.Entities;
+﻿using DAL.Entities;
+using DAL.UnitOfWork;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -38,9 +38,9 @@ namespace Services.Authentication
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
-                        new Claim(ClaimTypes.NameIdentifier, usr.ID.ToString()),
-                        new Claim(ClaimTypes.GivenName, usr.Lastname + " " + usr.Firstname),
-                        new Claim(ClaimTypes.Email, usr.Email)
+                        new Claim(ClaimTypes.NameIdentifier,usr.ID.ToString()),
+                        new Claim(ClaimTypes.GivenName,usr.Lastname + " " + usr.Firstname),
+                         new Claim(ClaimTypes.Email,usr.Email),
                     }),
                     Expires = expires,
                     Issuer = myIssuer,

@@ -1,4 +1,5 @@
 ﻿using DAL.Entities;
+using DAL.UnitOfWork;
 
 namespace DAL.Repository.Impl
 {

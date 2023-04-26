@@ -1,10 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Entities
 {
@@ -12,14 +8,20 @@ namespace DAL.Entities
     {
         public String Name { get; set; }
 
+        //[JsonConverter(typeof(WaterType))]
+        [BsonRepresentation(BsonType.String)]
+        [EnumDataType(typeof(WaterType))]
+        public WaterType WaterType { get; set; }
+
         public Double Depth { get; set; }
-        public Double Length { get; set; }
+
         public Double Height { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
-        public WaterType WaterType { get; set; }
+        public Double Length { get; set; }
 
 
         public Double Liters { get; set; }
+
+
     }
 }

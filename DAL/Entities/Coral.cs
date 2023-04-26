@@ -1,22 +1,17 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Entities
 {
     public class Coral : AquariumItem
     {
+        // [JsonConverter(typeof(CoralType))]
         [BsonRepresentation(BsonType.String)]
+        [EnumDataType(typeof(CoralType))]
         public CoralType CoralType { get; set; }
-    }
 
-    public enum CoralType
-    {
-        HardCoral,
-        SoftCoral
+
+
     }
 }

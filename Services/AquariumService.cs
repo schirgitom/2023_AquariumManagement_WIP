@@ -1,7 +1,8 @@
-﻿using DAL;
-using DAL.Entities;
+﻿using DAL.Entities;
 using DAL.Repository.Impl;
+using DAL.UnitOfWork;
 using Services.Models.Response;
+using Services.Models.Response.Basis;
 
 namespace Services
 {
@@ -39,20 +40,20 @@ namespace Services
             {
                 if (entry.Length <= 0)
                 {
-                    modelStateWrapper.AddError("LengthMissing", "Aquarium lenght must be greater 0");
+                    validationDictionary.AddError("LengthMissing", "Aquarium lenght must be greater 0");
                 }
                 if (entry.Height <= 0)
                 {
-                    modelStateWrapper.AddError("HeightMissing", "Aquarium height must be greater 0");
+                    validationDictionary.AddError("HeightMissing", "Aquarium height must be greater 0");
                 }
                 if (entry.Depth <= 0)
                 {
-                    modelStateWrapper.AddError("DepthMissing", "Aquarium depth must be greater 0");
+                    validationDictionary.AddError("DepthMissing", "Aquarium depth must be greater 0");
                 }
 
                 if (String.IsNullOrEmpty(entry.Name))
                 {
-                    modelStateWrapper.AddError("NameMissing", "Aquarium name must not be empty");
+                    validationDictionary.AddError("NameMissing", "Aquarium name must not be empty");
                 }
                 else
                 {
@@ -64,22 +65,22 @@ namespace Services
                         {
                             if (entry.ID.Equals(aqua.ID) == false)
                             {
-                                modelStateWrapper.AddError("NameTaken", "Aquarium name is already taken");
+                                validationDictionary.AddError("NameTaken", "Aquarium name is already taken");
                             }
                         }
                         else
                         {
-                            modelStateWrapper.AddError("NameTaken", "Aquarium name is already taken");
+                            validationDictionary.AddError("NameTaken", "Aquarium name is already taken");
                         }
                     }
                 }
             }
             else
             {
-                modelStateWrapper.AddError("ItemEmpty", "Object is empty");
+                validationDictionary.AddError("ItemEmpty", "Object is empty");
             }
 
-            return modelStateWrapper.IsValid;
+            return validationDictionary.IsValid;
 
         }
 

@@ -1,15 +1,9 @@
-﻿using MongoDB.Driver.GridFS;
-using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MongoDB.Driver;
+using MongoDB.Driver.GridFS;
 using Serilog;
 using Utils;
 
-namespace DAL
+namespace DAL.UnitOfWork
 {
     public class DBContext
     {
@@ -39,6 +33,7 @@ namespace DAL
 
         public async Task Connect()
         {
+
             SettingsReader reader = new SettingsReader();
             DBSettings settings = reader.GetSettings<DBSettings>("MongoDbSettings");
 

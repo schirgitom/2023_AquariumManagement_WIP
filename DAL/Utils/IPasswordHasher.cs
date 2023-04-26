@@ -1,4 +1,4 @@
-﻿namespace DAL.DBUtils
+﻿namespace DAL.Utils
 {
     public interface IPasswordHasher
     {

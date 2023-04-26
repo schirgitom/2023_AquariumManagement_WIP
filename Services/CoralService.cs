@@ -1,7 +1,7 @@
-﻿using DAL;
-using DAL.Entities;
+﻿using DAL.Entities;
 using DAL.Repository.Impl;
-using Services.Models.Response;
+using DAL.UnitOfWork;
+using Services.Models.Response.Basis;
 
 namespace Services
 {
@@ -19,10 +19,10 @@ namespace Services
             }
             else
             {
-                modelStateWrapper.AddError("NotValid", "Item is no Coral");
+                validationDictionary.AddError("NotValid", "Item is no Coral");
             }
 
-            return modelStateWrapper.IsValid;
+            return validationDictionary.IsValid;
         }
 
 
@@ -37,7 +37,8 @@ namespace Services
             }
             else
             {
-                coralresp.ErrorMessages = resp.ErrorMessages;
+                coralresp.AddErrorMessageRange(resp.ErrorMessages);
+                coralresp.AddWarningMessageRange(resp.WarningMessages);
                 coralresp.HasError = true;
             }
             return coralresp;

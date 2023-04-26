@@ -1,4 +1,5 @@
 ﻿using DAL.Entities;
+using DAL.UnitOfWork;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Serilog;
@@ -90,7 +91,7 @@ namespace DAL.Repository
         {
             try
             {
-                document.ID = document.GenerateID();
+                document.ID = document.GenerateNewID();
 
                 await _collection.InsertOneAsync(document);
 

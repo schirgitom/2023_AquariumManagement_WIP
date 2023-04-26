@@ -1,22 +1,28 @@
-﻿using DAL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DAL.UnitOfWork;
 
 namespace Services
 {
     public class GlobalService
     {
-        public UserServices UserService { get; set; }
+        public AquariumService AquariumService { get; set; }
+        public UserService UserService { get; set; }
+        public CoralService CoralService { get; set; }
 
-        public GlobalService(IUnitOfWork uow)
+        public PictureService PictureService { get; set; }
+        public AnimalService AnimalService { get; set; }
+        public UnitOfWork UnitOfWork { get; set; }
+
+        public GlobalService(IUnitOfWork UnitOfWork)
         {
-            UnitOfWork uowi = (UnitOfWork)uow;
+            UnitOfWork uow = (UnitOfWork)UnitOfWork;
 
-            UserService = new UserServices(uowi, uowi.Users, this);
+            this.UnitOfWork = uow;
 
+            AquariumService = new AquariumService(uow, uow.Aquariums, this);
+            UserService = new UserService(uow, uow.Users, this);
+            CoralService = new CoralService(uow, uow.AquariumItems, this);
+            AnimalService = new AnimalService(uow, uow.AquariumItems, this);
+            PictureService = new PictureService(uow, uow.Pictures, this);
         }
     }
 }

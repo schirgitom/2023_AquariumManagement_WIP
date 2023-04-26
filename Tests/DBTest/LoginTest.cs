@@ -1,6 +1,6 @@
 ﻿using DAL;
-using DAL.DBUtils;
 using DAL.Entities;
+using DAL.UnitOfWork;
 using Services.Authentication;
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,6 @@ namespace Tests.DBTest
         {
             
             User usr = new User();
-            usr.IsActive = true;
             usr.Lastname = "Schirgi";
             usr.Firstname = "Thomas";
             usr.Email = "thomas.schirgi@schischo.com";

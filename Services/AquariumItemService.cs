@@ -1,7 +1,7 @@
-﻿using DAL;
-using DAL.Entities;
+﻿using DAL.Entities;
 using DAL.Repository.Impl;
-using Services.Models.Response;
+using DAL.UnitOfWork;
+using Services.Models.Response.Basis;
 
 namespace Services
 {
@@ -35,19 +35,19 @@ namespace Services
             {
                 if (entry.Inserted <= DateTime.MinValue)
                 {
-                    modelStateWrapper.AddError("InsertedMissing", "No insert date was set");
+                    validationDictionary.AddError("InsertedMissing", "No insert date was set");
                 }
                 if (entry.Amount <= 0)
                 {
-                    modelStateWrapper.AddError("AmountMissing", "Amount must be greater 0");
+                    validationDictionary.AddError("AmountMissing", "Amount must be greater 0");
                 }
             }
             else
             {
-                modelStateWrapper.AddError("ItemEmpty", "Object is empty");
+                validationDictionary.AddError("ItemEmpty", "Object is empty");
             }
 
-            return modelStateWrapper.IsValid;
+            return validationDictionary.IsValid;
 
         }
 
@@ -75,7 +75,7 @@ namespace Services
             else
             {
                 ret.HasError = true;
-                ret.ErrorMessages.Add("Aquarium not found");
+                ret.ErrorMessages.Add("NotFound", "Aquarium not found");
             }
 
             return ret;

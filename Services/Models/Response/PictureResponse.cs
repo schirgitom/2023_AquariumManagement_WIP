@@ -1,9 +1,4 @@
 ﻿using DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Models.Response
 {
@@ -15,7 +10,7 @@ namespace Services.Models.Response
         {
             get
             {
-                if(Bytes != null)
+                if (Bytes != null)
                 {
                     return Convert.ToBase64String(Bytes);
                 }
@@ -25,5 +20,6 @@ namespace Services.Models.Response
         }
 
         public Picture Picture { get; set; }
+
     }
 }

@@ -1,108 +1,32 @@
-﻿using DAL;
-using DAL.Entities;
-using DAL.Repository;
+﻿using DAL.Entities;
+using DAL.Repository.Impl;
+using DAL.UnitOfWork;
 using MimeKit;
 using MongoDB.Bson;
 using Services.Models.Request;
 using Services.Models.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Services.Models.Response.Basis;
 
 namespace Services
 {
     public class PictureService : Service<Picture>
     {
-        public PictureService(UnitOfWork uow, IRepository<Picture> repository, GlobalService service) : base(uow, repository, service)
+        public PictureService(UnitOfWork uow, IPictureRepository repo, GlobalService service) : base(uow, repo, service)
         {
         }
 
-        public override Task<ItemResponseModel<Picture>> Update(string id, Picture entity)
+        public override async Task<bool> Validate(Picture entry)
         {
-            throw new NotImplementedException();
-        }
-
-        public override async Task<bool> Validate(Picture entity)
-        {
-            if(entity != null)
+            if (entry != null)
             {
 
-            }
-          else
-            {
-                modelStateWrapper.AddError("Empty", "Picture is empty");
-            }
-
-            return modelStateWrapper.IsValid;
-        }
-
-        protected override Task<ItemResponseModel<Picture>> Create(Picture entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<ItemResponseModel<PictureResponse>> AddPicture(String aquarium, PictureRequest request)
-        {
-            ItemResponseModel<PictureResponse> returnmodel = new ItemResponseModel<PictureResponse>();
-            returnmodel.Data = null;
-            returnmodel.HasError = true;
-
-            if(request.FormFile != null)
-            {
-                String filename = request.FormFile.FileName;
-
-                if(!String.IsNullOrEmpty(filename))
-                {
-                    String typ = MimeTypes.GetMimeType(filename);
-
-                    if(typ.StartsWith("image/"))
-                    {
-                        byte[] binaries = null;
-
-                        using(var stream = new MemoryStream())
-                        {
-                            request.FormFile.CopyTo(stream);
-                            binaries = stream.ToArray();
-                        }
-
-                        ObjectId pictureid = await UnitOfWork.Context.GridFSBucket.UploadFromBytesAsync(filename, binaries);
-
-                        Picture pic = new Picture();
-                        pic.PictureID = pictureid.ToString();
-                        pic.Description = request.Description;
-                        pic.Aquarium = aquarium;
-                        pic.ContentType = typ;
-
-                        Picture indb = await UnitOfWork.Pictures.InsertOneAsync(pic);
-
-                        var bytes = await UnitOfWork.Context.GridFSBucket.DownloadAsBytesAsync(pictureid);
-
-                        PictureResponse response = new PictureResponse();
-                        response.Picture = indb;
-                        response.Bytes = bytes;
-                        returnmodel.Data = response;
-                        returnmodel.HasError = false;
-
-                    }
-                    else
-                    {
-                        returnmodel.ErrorMessages.Add("Only images are allowed");
-                    }
-                }
-                else
-                {
-                    returnmodel.ErrorMessages.Add("Filename is empty");
-                }
             }
             else
             {
-                returnmodel.ErrorMessages.Add("No Picture provided");
+                validationDictionary.AddError("NotValid", "Item is no Coral");
             }
 
-
-            return returnmodel;
+            return validationDictionary.IsValid;
         }
 
         public async Task<ItemResultModel> Delete(String aquarium, String picture)
@@ -116,7 +40,7 @@ namespace Services
                 try
                 {
                     await UnitOfWork.Context.GridFSBucket.DeleteAsync(new ObjectId(pic.PictureID));
-                    await repository.DeleteByIdAsync(picture);
+                    await Repository.DeleteByIdAsync(picture);
 
                     result.Success = true;
                 }
@@ -125,31 +49,104 @@ namespace Services
                     log.Warning(ex, "Delete Failed");
                     result.Success = false;
                     result.HasError = true;
-                    result.ErrorMessages.Add("Delete Failed");
+                    result.ErrorMessages.Add("Failed", "Delete Failed");
                 }
             }
             else
             {
                 result.Success = false;
                 result.HasError = true;
-                result.ErrorMessages.Add("Image not found");
+                result.ErrorMessages.Add("NotFound", "Image not found");
             }
 
             return result;
 
         }
 
-        
+        public async Task<ItemResponseModel<PictureResponse>> AddPicture(String aquarium, PictureRequest pict)
+        {
+
+            ItemResponseModel<PictureResponse> ret = new ItemResponseModel<PictureResponse>();
+            ret.Data = null;
+            ret.HasError = true;
+            if (pict.FormFile != null)
+            {
+
+                String filename = pict.FormFile.FileName;
+                try
+                {
+                    if (!String.IsNullOrEmpty(filename))
+                    {
+                        String type = MimeTypes.GetMimeType(pict.FormFile.FileName);
+
+
+                        if (type.StartsWith("image/"))
+                        {
+                            byte[] bin = null;
+                            using (var stream = new MemoryStream())
+                            {
+                                pict.FormFile.CopyTo(stream);
+                                bin = stream.ToArray();
+                            }
+
+                            ObjectId id = await UnitOfWork.Context.GridFSBucket.UploadFromBytesAsync(pict.FormFile.FileName, bin);
+                            Picture pic = new Picture();
+                            pic.PictureID = id.ToString();
+                            pic.Uploaded = DateTime.Now;
+                            pic.Aquarium = aquarium;
+                            pic.ContentType = type;
+
+                            if (pict != null)
+                            {
+                                pic.Description = pict.Description;
+                            }
+
+                            Picture fpic = await UnitOfWork.Pictures.InsertOneAsync(pic);
+
+                            var bytes = await UnitOfWork.Context.GridFSBucket.DownloadAsBytesAsync(id);
+
+                            PictureResponse response = new PictureResponse();
+                            response.Picture = fpic;
+                            response.Bytes = bytes;
+                            ret.HasError = false;
+                            ret.Data = response;
+
+                        }
+                        else
+                        {
+                            ret.ErrorMessages.Add("FileContent", "Uploaded File is no image");
+                        }
+
+                    }
+                    else
+                    {
+                        ret.ErrorMessages.Add("FileName", "Filename is empty");
+                    }
+
+
+                }
+                catch (Exception e)
+                {
+                    log.Warning(e, "Upload image failed");
+                    ret.ErrorMessages.Add("Error", "Error during uploading");
+                }
+            }
+            else
+            {
+                ret.ErrorMessages.Add("FileName", "File is empty");
+            }
+            return ret;
+        }
 
         public async Task<List<PictureResponse>> GetForAquarium(String aquarium)
         {
             List<PictureResponse> respo = new List<PictureResponse>();
-            List<Picture> pictures = await repository.FilterByAsync(x => x.Aquarium.Equals(aquarium));
+            List<Picture> pictures = await Repository.FilterByAsync(x => x.Aquarium.Equals(aquarium));
 
             foreach (Picture pi in pictures)
             {
 
-                var bytes = await UnitOfWork.Context.GridFSBucket.DownloadAsBytesAsync(pi.PictureID);
+                var bytes = await UnitOfWork.Context.GridFSBucket.DownloadAsBytesAsync(new ObjectId(pi.PictureID));
 
                 PictureResponse response = new PictureResponse();
                 response.Picture = pi;
@@ -164,9 +161,9 @@ namespace Services
         public async Task<ItemResponseModel<PictureResponse>> GetPicture(String id)
         {
             ItemResponseModel<PictureResponse> ret = new ItemResponseModel<PictureResponse>();
-            Picture pictures = await repository.FindByIdAsync(id);
+            Picture pictures = await Repository.FindByIdAsync(id);
 
-            var bytes = await UnitOfWork.Context.GridFSBucket.DownloadAsBytesAsync(pictures.PictureID);
+            var bytes = await UnitOfWork.Context.GridFSBucket.DownloadAsBytesAsync(new ObjectId(pictures.PictureID));
 
             PictureResponse response = new PictureResponse();
             response.Picture = pictures;
@@ -177,6 +174,14 @@ namespace Services
         }
 
 
+        protected override Task<ItemResponseModel<Picture>> Create(Picture entry)
+        {
+            throw new NotImplementedException();
+        }
 
+        public override Task<ItemResponseModel<Picture>> Update(string id, Picture entry)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

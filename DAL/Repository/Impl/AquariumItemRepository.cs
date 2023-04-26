@@ -1,4 +1,5 @@
 ﻿using DAL.Entities;
+using DAL.UnitOfWork;
 using MongoDB.Driver;
 
 namespace DAL.Repository.Impl

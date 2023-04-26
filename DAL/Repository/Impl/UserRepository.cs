@@ -1,5 +1,6 @@
-﻿using DAL.DBUtils;
-using DAL.Entities;
+﻿using DAL.Entities;
+using DAL.UnitOfWork;
+using DAL.Utils;
 
 namespace DAL.Repository.Impl
 {
@@ -21,7 +22,7 @@ namespace DAL.Repository.Impl
         public async Task<User> Login(string username, string password)
         {
 
-            User fromdb = await base.FindOneAsync(x => x.Email == username);
+            User fromdb = await base.FindOneAsync(x => x.Email == username && x.Active == true);
 
             if (fromdb != null)
             {

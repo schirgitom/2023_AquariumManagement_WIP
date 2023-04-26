@@ -1,10 +1,5 @@
 ﻿using DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Repository
 {
@@ -12,7 +7,7 @@ namespace DAL.Repository
     {
 
         List<TEntity> FilterBy(
-               Expression<Func<TEntity, bool>> filterExpression);
+            Expression<Func<TEntity, bool>> filterExpression);
 
         Task<List<TEntity>> FilterByAsync(
            Expression<Func<TEntity, bool>> filterExpression);
@@ -39,5 +34,4 @@ namespace DAL.Repository
 
         Task DeleteManyAsync(Expression<Func<TEntity, bool>> filterExpression);
     }
-
 }

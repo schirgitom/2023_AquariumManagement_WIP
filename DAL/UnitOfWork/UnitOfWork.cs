@@ -1,25 +1,14 @@
-﻿using DAL.Entities;
-using DAL.Repository;
-using DAL.Repository.Impl;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DAL.Repository.Impl;
 
-namespace DAL
+namespace DAL.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
         public DBContext Context { get; private set; } = null;
-
-
-
-
-        public UnitOfWork() {
-            
-            Context = new DBContext();
-        
+        public UnitOfWork()
+        {
+            DBContext context = new DBContext();
+            Context = context;
         }
 
         public IAquariumRepository Aquariums
@@ -54,15 +43,13 @@ namespace DAL
             }
         }
 
-        public IRepository<Picture> Pictures
+        public IPictureRepository Pictures
         {
             get
             {
-                return new Repository<Picture>(Context);
+                return new PictureRepository(Context);
             }
         }
-
-
 
     }
 }

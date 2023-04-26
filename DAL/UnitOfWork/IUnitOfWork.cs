@@ -1,17 +1,12 @@
-﻿using DAL.Entities;
-using DAL.Repository;
-using DAL.Repository.Impl;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DAL.Repository.Impl;
 
-namespace DAL
+namespace DAL.UnitOfWork
 {
     public interface IUnitOfWork
     {
+
         DBContext Context { get; }
+
 
         IAquariumRepository Aquariums { get; }
 
@@ -20,7 +15,5 @@ namespace DAL
         IUserRepository Users { get; }
 
         IUserAquariumRepository UsersAquarium { get; }
-
-        IRepository<Picture> Pictures { get; }
     }
 }

@@ -1,16 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Utils
 {
     public static class Logger
     {
-
 
         private static ILogger _Logger = null;
 
@@ -46,7 +40,7 @@ namespace Utils
 
                 var configuration = new ConfigurationBuilder()
              .SetBasePath(folder)
-             .AddJsonFile("appsettings.json")
+             .AddJsonFile("Settings/appsettings.json")
              .Build();
 
                 Log.Logger = new LoggerConfiguration()
@@ -60,5 +54,6 @@ namespace Utils
             }
 
         }
+
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Utils
 {
-    public class Constants
+    public static class Constants
     {
-        public static String CurrentFolder
+        public static string CurrentFolder
         {
             get
             {
@@ -14,5 +14,6 @@ namespace Utils
                 return Path.GetDirectoryName(path);
             }
         }
+
     }
 }
